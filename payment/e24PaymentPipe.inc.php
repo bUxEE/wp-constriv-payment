@@ -1,0 +1,535 @@
+<?php
+
+/*
+ * e24PaymentPipe
+ *
+ *
+ * e24payment-php is an implementation in PHP of E24PaymentPipe 
+ * java classes. It allows to connect to online credit card payment
+ * from http://www.aciworldwide.com/.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * version 2.1 as published by the Free Software Foundation.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details at 
+ * http://www.gnu.org/copyleft/lgpl.html
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
+class e24PaymentPipe {
+
+  var $SUCCESS = 0;
+  var $FAILURE = -1;
+  var $BUFFER = 2320;
+  var $strIDOpen = "<id>";
+  var $strPasswordOpen = "<password>";
+  var $strWebAddressOpen = "<webaddress>";
+  var $strPortOpen = "<port>";
+  var $strContextOpen = "<context>";
+  var $strIDClose = "</id>";
+  var $strPasswordClose = "</password>";
+  var $strWebAddressClose = "</webaddress>";
+  var $strPortClose = "</port>";
+  var $strContextClose = "</context>";
+  var $webAddress;
+  var $port;
+  var $id;
+  var $password;
+  var $action;
+  var $transId;
+  var $amt;
+  var $responseURL;
+  var $trackId;
+  var $udf1;
+  var $udf2;
+  var $udf3;
+  var $udf4;
+  var $udf5;
+  var $paymentPage;
+  var $paymentId;
+  var $result;
+  var $auth;
+  var $ref;
+  var $avr;
+  var $date;
+  var $currency;
+  var $errorURL;
+  var $language;
+  var $context;
+  var $resourcePath;
+  var $alias;
+  var $error;
+  var $rawResponse;
+  var $debugMsg;
+
+  function e24PaymentPipe() {
+    $this->webAddress = "";
+    $this->port = "";
+    $this->id = "";
+    $this->password = "";
+    $this->action = ""; // 1 = purchase
+    $this->transId = "";
+    $this->amt = "";
+    $this->responseURL = "";
+    $this->trackId = "";
+    $this->udf1 = "";
+    $this->udf2 = "";
+    $this->udf3 = "";
+    $this->udf4 = "";
+    $this->udf5 = "";
+    $this->paymentPage = "";
+    $this->paymentId = "";
+    $this->result = 0;
+    $this->auth = "";
+    $this->ref = "";
+    $this->avr = "";
+    $this->date = "";
+    $this->currency = "";
+    $this->errorURL = "";
+    $this->language = "";
+    $this->context = "";
+    $this->resourcePath = "";
+    $this->alias = "";
+    $this->error = "";
+    $this->rawResponse = "";
+    $this->debugMsg = "";
+  }
+
+  function getWebAddress() {
+    return webAddress;
+  }
+
+  function setWebAddress($s) {
+    $this->webAddress = $s;
+  }
+
+  function getPort() {
+    return $this->port;
+  }
+
+  function setPort($s) {
+    $this->port = $s;
+  }
+
+  function setId($s) {
+    $this->id = $s;
+  }
+
+  function getId() {
+    return $this->id;
+  }
+
+  function setPassword($s) {
+    $this->password = $s;
+  }
+
+  function getPassword() {
+    return $this->password;
+  }
+
+  function setAction($s) {
+    $this->action = $s;
+  }
+
+  function getAction() {
+    return $this->action;
+  }
+
+  function setTransId($s) {
+    $this->transId = $s;
+  }
+
+  function getTransId() {
+    return $this->transId;
+  }
+
+  function setAmt($s) {
+    $this->amt = $s;
+  }
+
+  function getAmt() {
+    return $this->amt;
+  }
+
+  function setResponseURL($s) {
+    $this->responseURL = $s;
+  }
+
+  function getResponseURL() {
+    return $this->responseURL;
+  }
+
+  function setTrackId($s) {
+    $this->trackId = $s;
+  }
+
+  function getTrackId() {
+    return $this->trackId;
+  }
+
+  function setUdf1($s) {
+    $this->udf1 = $s;
+  }
+
+  function getUdf1() {
+    return $this->udf1;
+  }
+
+  function setUdf2($s) {
+    $this->udf2 = $s;
+  }
+
+  function getUdf2() {
+    return $this->udf2;
+  }
+
+  function setUdf3($s) {
+    $this->udf3 = $s;
+  }
+
+  function getUdf3() {
+    return $this->udf3;
+  }
+
+  function setUdf4($s) {
+    $this->udf4 = $s;
+  }
+
+  function getUdf4() {
+    return $this->udf4;
+  }
+
+  function setUdf5($s) {
+    $this->udf5 = $s;
+  }
+
+  function getUdf5() {
+    return $this->udf5;
+  }
+
+  function getPaymentPage() {
+    return $this->paymentPage;
+  }
+
+  function getPaymentId() {
+    return $this->paymentId;
+  }
+
+  function setPaymentId($s) {
+    $this->paymentId = $s;
+  }
+
+  function setPaymentPage($s) {
+    $this->paymentPage = $s;
+  }
+
+  function getRedirectContent() {
+    return ("Location: " . $this->paymentPage . "?PaymentID=" . $this->paymentId);
+  }
+
+  function getResult() {
+    return $this->result;
+  }
+
+  function getAuth() {
+    return $this->auth;
+  }
+
+  function getAvr() {
+    return $this->avr;
+  }
+
+  function getDate() {
+    return $this->date;
+  }
+
+  function getRef() {
+    return $this->ref;
+  }
+
+  function getCurrency() {
+    return $this->currency;
+  }
+
+  function setCurrency($s) {
+    $this->currency = $s;
+  }
+
+  function getLanguage() {
+    return $this->language;
+  }
+
+  function setLanguage($s) {
+    $this->language = $s;
+  }
+
+  function getErrorURL() {
+    return $this->errorURL;
+  }
+
+  function setErrorURL($s) {
+    $this->errorURL = $s;
+  }
+
+  function setContext($s) {
+    $this->context = $s;
+  }
+
+  function getResourcePath() {
+    return $this->resourcePath;
+  }
+
+  function setResourcePath($s) {
+    $this->resourcePath = $s;
+  }
+
+  function getAlias() {
+    return $this->alias;
+  }
+
+  function setAlias($s) {
+    $this->alias = $s;
+  }
+
+  function getErrorMsg() {
+    return $this->error;
+  }
+
+  function getRawResponse() {
+    return $this->rawResponse;
+  }
+
+  function getDebugMsg() {
+    return $this->debugMsg;
+  }
+
+  function hidePassword($s) {
+    $parts = array();
+    parse_str($s, $parts); 
+    return str_replace('password='.urlencode($parts["password"]), substr_replace('password='.urlencode($parts["password"]), '<hidden>', -4), $s);
+  }
+
+  function performPaymentInitialization() {
+    $stringbuffer = "";
+    /*
+    if (!$this->getSecureSettings())
+      return -1;
+    */
+    if (strlen($this->id) > 0)
+      $stringbuffer .= ("id=" . $this->id . "&");
+    if (strlen($this->password) > 0)
+      $stringbuffer .= ("password=" . $this->password . "&");
+    if (strlen($this->amt) > 0)
+      $stringbuffer.=("amt=" . $this->amt . "&");
+    if (strlen($this->currency) > 0)
+      $stringbuffer.=("currencycode=" . $this->currency . "&");
+    if (strlen($this->action) > 0)
+      $stringbuffer.=("action=" . $this->action . "&");
+    if (strlen($this->language) > 0)
+      $stringbuffer.=("langid=" . $this->language . "&");
+    if (strlen($this->responseURL) > 0)
+      $stringbuffer.=("responseURL=" . $this->responseURL . "&");
+    if (strlen($this->errorURL) > 0)
+      $stringbuffer.=("errorURL=" . $this->errorURL . "&");
+    if (strlen($this->trackId) > 0)
+      $stringbuffer.=("trackid=" . $this->trackId . "&");
+    if (strlen($this->udf1) > 0)
+      $stringbuffer.=("udf1=" . $this->udf1 . "&");
+    if (strlen($this->udf2) > 0)
+      $stringbuffer.=("udf2=" . $this->udf2 . "&");
+    if (strlen($this->udf3) > 0)
+      $stringbuffer.=("udf3=" . $this->udf3 . "&");
+    if (strlen($this->udf4) > 0)
+      $stringbuffer.=("udf4=" . $this->udf4 . "&");
+    if (strlen($this->udf5) > 0)
+      $stringbuffer.=("udf5=" . $this->udf5 . "&");
+    $s = $this->sendMessage($stringbuffer, "PaymentInitHTTPServlet");
+    if ($s == null)
+      return -1;
+    $i = strpos($s, ":");
+    if ($i === false) {
+      $this->error = "Payment Initialization returned an invalid response: " . $s;
+      return -1;
+    } else {
+      $this->paymentId = substr($s, 0, $i);
+      $this->paymentPage = substr($s, $i + 1);
+      return 0;
+    }
+  }
+
+  function performTransaction() {
+    $stringbuffer = "";
+    /*
+    if (!$this->getSecureSettings())
+      return -1;
+    */
+    if (strlen($this->id) > 0)
+      $stringbuffer.=("id=" . id . "&");
+    if (strlen($this->password) > 0)
+      $stringbuffer.=("password=" . $this->password . "&");
+    if (strlen($this->amt) > 0)
+      $stringbuffer.=("amt=" . $this->amt . "&");
+    if (strlen($this->action) > 0)
+      $stringbuffer.=("action=" . $this->action . "&");
+    if (strlen($this->paymentId) > 0)
+      $stringbuffer.=("paymentid=" . $this->paymentId . "&");
+    if (strlen($this->transId) > 0)
+      $stringbuffer.=("transid=" . $this->transId . "&");
+    if (strlen($this->trackId) > 0)
+      $stringbuffer.=("trackid=" . $this->trackId . "&");
+    if (strlen($this->udf1) > 0)
+      $stringbuffer.=("udf1=" . $this->udf1 . "&");
+    if (strlen($this->udf2) > 0)
+      $stringbuffer.=("udf2=" . $this->udf2 . "&");
+    if (strlen($this->udf3) > 0)
+      $stringbuffer.=("udf3=" . $this->udf3 . "&");
+    if (strlen($this->udf4) > 0)
+      $stringbuffer.=("udf4=" . $this->udf4 . "&");
+    if (strlen($this->udf5) > 0)
+      $stringbuffer.=("udf5=" . $this->udf5 . "&");
+    $s = sendMessage($stringbuffer, "PaymentTranHTTPServlet");
+    if ($s == null)
+      return -1;
+    $arraylist = parseResults($s);
+    if ($arraylist == null) {
+      return -1;
+    } else {
+      $this->result = $arraylist[0];
+      $this->auth = $arraylist[1];
+      $this->ref = $arraylist[2];
+      $this->avr = $arraylist[3];
+      $this->date = $arraylist[4];
+      $this->transId = $arraylist[5];
+      $this->trackId = $arraylist[6];
+      $this->udf1 = $arraylist[7];
+      $this->udf2 = $arraylist[8];
+      $this->udf3 = $arraylist[9];
+      $this->udf4 = $arraylist[10];
+      $this->udf5 = $arraylist[11];
+      return 0;
+    }
+  }
+
+  function sendMessage($s, $s1) {
+    $stringbuffer = "";
+    $error = "";
+    $this->debugMsg .= ("\n---------- " . $s1 . ": " . time() . " ----------");
+    if ($this->port == "")
+      $this->port = "443";
+    if ($this->port == "443") {
+      if (strlen($this->webAddress) <= 0) {
+        $error = "No URL specified.";
+        return null;
+      }
+      if ($this->port == "443")
+        $stringbuffer.=("https://");
+      else
+        $stringbuffer.=("http://");
+      $stringbuffer.=($this->webAddress);
+      if (strlen($this->port) > 0) {
+        $stringbuffer.=(":");
+        $stringbuffer.=($this->port);
+      }
+      if (strlen($this->context) > 0) {
+        if (!$this->StartsWith($this->context, "/"))
+          $stringbuffer.=("/");
+        $stringbuffer.=($this->context);
+        if (!$this->EndsWith($this->context, "/"))
+          $stringbuffer.=("/");
+      } else {
+        $stringbuffer.=("/");
+      }
+      $stringbuffer.=("servlet/");
+      $stringbuffer.=($s1);
+      $this->debugMsg.=("\nAbout to create the URL to: " . $stringbuffer);
+      $url = $stringbuffer;
+
+      $this->debugMsg.=("\nAbout to create http connection");
+
+      $this->debugMsg.=("\nCreated connection");
+      if (strlen($s) > 0) {
+        $c = curl_init();
+        $this->debugMsg.=("\nurl : ".$stringbuffer);
+        curl_setopt($c, CURLOPT_URL, $stringbuffer);     
+        curl_setopt($c, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($c, CURLOPT_SSLVERSION, 5);
+        curl_setopt($c, CURLOPT_POST, true);     
+        $this->debugMsg.=("\ndata : ".$this->hidePassword($s));        
+        curl_setopt($c, CURLOPT_POSTFIELDS, $s);
+        $this->debugMsg.=("\nabout to write DataOutputSteam");
+
+        $this->debugMsg.=("\nafter DataOutputStream");
+        curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+        $tmp = curl_exec($c);
+
+        $this->debugMsg.=("\ncurl_getinfo : ".implode('|', curl_getinfo($c)));          
+
+        curl_close($c);
+        $this->rawResponse = $tmp;
+        $this->debugMsg.=("\nReceived RESPONSE: " . $this->rawResponse);
+        return $this->rawResponse;
+      } else {
+        $error = "No Data To Post!";
+      }
+    } {
+      $this->clearFields();
+      $this->error = "Failed to make connection:\n". $error;  //. $exception;
+      return null;
+    }
+  }
+
+  function parseResults($s) {
+    $arraylist = array();
+    {
+      if (StartsWith($s, "!ERROR!")) {
+        $this->error = $s;
+        return null;
+      }
+
+      $tokens = strtok($s, ":\r\n");
+
+      $s1;
+      $flag = false;
+      foreach ($tokens as $token) {
+        $s2 = $token;
+        if (!s2 . startsWith(":")) {
+          $arraylist[] = ($s2);
+          $flag = false;
+        } else {
+          if (flag)
+            $arraylist[] = ("");
+          $flag = true;
+        }
+      }
+      return $arraylist;
+    }
+
+    $this->error = "Internal Error!";
+    return null;
+  }
+
+  function clearFields() {
+    $this->error = "";
+    $this->paymentPage = "";
+    $this->paymentId = "";
+  }
+
+  function StartsWith($Haystack, $Needle) {
+    // Recommended version, using strpos
+    return strpos($Haystack, $Needle) === 0;
+  }
+
+  function EndsWith($Haystack, $Needle) {
+    // Recommended version, using strpos
+    return strrpos($Haystack, $Needle) === strlen($Haystack) - strlen($Needle);
+  }
+
+}
